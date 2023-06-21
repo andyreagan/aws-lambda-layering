@@ -22,9 +22,9 @@ def get_message():
 
     if msg is None:
         logger.info("No message")
-    if msg.error():
+    elif msg.error():
         logger.info("Consumer error: {}".format(msg.error()))
-
-    logger.info('Received message: {}'.format(msg.value().decode('utf-8')))
+    else:
+        logger.info('Received message: {}'.format(msg.value().decode('utf-8')))
 
 # c.close()
