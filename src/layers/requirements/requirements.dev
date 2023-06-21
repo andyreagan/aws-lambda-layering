@@ -1,2 +1,5 @@
-pytest
 httpx
+pytest
+pytest-cov
+pytest-django
+pytest-mock

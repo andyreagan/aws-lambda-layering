@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from mangum import Mangum
 
 from models import CustomerInformation
 from workflow import get_customer_info
@@ -34,3 +35,15 @@ async def unhandled_exception_handler(request, err):
 @app.get("/customer/{customer_id}")
 def get_customer(customer_id: str) -> CustomerInformation:
     return get_customer_info(customer_id)
+
+
+# https://mangum.io/
+handler = Mangum(
+    app,
+)
+
+# Add tracing
+handler.__name__ = "handler"  # tracer requires __name__ to be set
+handler = tracer.capture_lambda_handler(handler)
+# Add logging
+handler = logger.inject_lambda_context(handler, clear_state=True)
