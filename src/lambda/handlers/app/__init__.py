@@ -1,8 +1,10 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from django.db import connection
+
 from mangum import Mangum
 
-from models import CustomerInformation
+from models import CustomerInformation, HealthCheckModel
 from workflow import get_customer_info
 
 from .router import LoggerRouteHandler
@@ -35,6 +37,18 @@ async def unhandled_exception_handler(request, err):
 @app.get("/customer/{customer_id}")
 def get_customer(customer_id: str) -> CustomerInformation:
     return get_customer_info(customer_id)
+
+
+@app.get("/health_check")
+def health_check() -> HealthCheckModel:
+    return HealthCheckModel()
+
+
+@app.get("/health_check_db")
+def health_check_db() -> HealthCheckModel:
+    logger.debug(f"{connection.settings_dict=}")
+    connection.ensure_connection()
+    return HealthCheckModel()
 
 
 # https://mangum.io/
