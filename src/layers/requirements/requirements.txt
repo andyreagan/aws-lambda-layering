@@ -7,4 +7,4 @@ jmespath # json parsing, not implicit from aws-lambda-powertools?
 mangum # middleware
 psycopg2-binary # enables database connection
 pydantic # supports fastapi
-# weasyprint # pdf generation
+weasyprint # pdf generation

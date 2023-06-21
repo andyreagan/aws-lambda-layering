@@ -3,4 +3,3 @@ pytest
 pytest-cov
 pytest-django
 pytest-mock
-weasyprint  # not in normal deps so need here
