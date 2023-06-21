@@ -32,6 +32,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r src/layers/requirements/requirements.txt
+          pip install -r src/layers/requirements/requirements.dev
 
       - name: Set env variables
         run: |
@@ -100,11 +101,11 @@ jobs:
           cp -r layers/python/common/* tmp/python
           cd tmp
           zip -rq ../common-layer.zip python
-          popd
+          cd ..
           cd layers/requirements
           pip install -r requirements.txt -t python
           zip -rq ../../libs-layer.zip python
-          # popd
+          # cd ../..
           # mkdir -p python/psycopg2
           # git clone https://github.com/jkehler/awslambda-psycopg2.git
           # cp -r awslambda-psycopg2/psycopg2-3.9/* python/psycopg2/
