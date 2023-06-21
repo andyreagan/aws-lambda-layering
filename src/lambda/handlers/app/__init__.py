@@ -6,6 +6,7 @@ from mangum import Mangum
 
 from models import CustomerInformation, HealthCheckModel
 from workflow import get_customer_info
+from kafka import get_message
 
 from .router import LoggerRouteHandler
 from .utils import logger, tracer
@@ -47,7 +48,10 @@ def health_check() -> HealthCheckModel:
 @app.get("/health-check-db")
 def health_check_db() -> HealthCheckModel:
     logger.debug(f"{connection.settings_dict=}")
+    # test db
     connection.ensure_connection()
+    # test kafka
+    get_message()
     return HealthCheckModel()
 
 
