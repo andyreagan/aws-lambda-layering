@@ -1,20 +1,18 @@
-from confluent_kafka import Consumer
 import logging
 
 from aws_lambda_powertools import Logger
+from confluent_kafka import Consumer
 
 logger = Logger(service="AWS Lambda Layering Test")
 
 logger.setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO)
 
-c = Consumer({
-    'bootstrap.servers': 'mybroker',
-    'group.id': 'mygroup',
-    'auto.offset.reset': 'earliest'
-})
+c = Consumer(
+    {"bootstrap.servers": "mybroker", "group.id": "mygroup", "auto.offset.reset": "earliest"}
+)
 
-c.subscribe(['mytopic'])
+c.subscribe(["mytopic"])
 
 
 def get_message():
@@ -25,6 +23,7 @@ def get_message():
     elif msg.error():
         logger.info("Consumer error: {}".format(msg.error()))
     else:
-        logger.info('Received message: {}'.format(msg.value().decode('utf-8')))
+        logger.info("Received message: {}".format(msg.value().decode("utf-8")))
+
 
 # c.close()

@@ -1,13 +1,12 @@
+from django.db import connection
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from django.db import connection
-
+from kafka import get_message
 from mangum import Mangum
 from weasyprint import HTML
 
 from models import CustomerInformation, HealthCheckModel
 from workflow import get_customer_info
-from kafka import get_message
 
 from .router import LoggerRouteHandler
 from .utils import logger, tracer
@@ -54,7 +53,7 @@ def health_check_db() -> HealthCheckModel:
     # test kafka
     get_message()
     # test weazyprint
-    HTML('https://weasyprint.org/').write_pdf('/tmp/weasyprint-website.pdf')
+    HTML("https://weasyprint.org/").write_pdf("/tmp/weasyprint-website.pdf")
     return HealthCheckModel()
 
 

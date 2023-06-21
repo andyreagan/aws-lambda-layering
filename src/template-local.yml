@@ -115,7 +115,7 @@ Resources:
             ApiId: WearableAPIGateway
             Path: /health-check-db
             PayloadFormatVersion: "2.0"
-            Method: get                
+            Method: get
   InvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
