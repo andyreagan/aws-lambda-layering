@@ -120,6 +120,7 @@ jobs:
         with:
           cwd: src
           command: curl http://127.0.0.1:3000/openapi.json > openapi.json
+          command-windows: curl http://127.0.0.1:3000/openapi.json > openapi.json
           build: sam build -t template-local.yml
           start: sam local start-api -t template-local.yml --debug --env-vars local-env-vars.json --docker-network ${{ job.container.network }}
           wait-on: 'http://localhost:3000/health_check'
