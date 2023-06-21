@@ -1,0 +1,130 @@
+name: Unit test and test of SAM build/run + postgres
+on: push
+
+env:
+  DB_NAME: postgres
+  DB_USER: postgres
+  DB_HOST: localhost
+  DB_PORT: 5432
+  DB_PASSWORD: postgres
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install migration dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r src/layers/requirements/requirements.txt
+
+      - name: Set env variables
+        run: |
+          echo "TESTS_DIR=$TESTS_DIR" >> $GITHUB_ENV
+          echo "COMMON_LAYER_DIR=$COMMON_LAYER_DIR" >> $GITHUB_ENV
+          echo "LAMBDA_DIR=$LAMBDA_DIR" >> $GITHUB_ENV
+          echo "PYTHONPATH=$TESTS_DIR:$COMMON_LAYER_DIR:$LAMBDA_DIR" >> $GITHUB_ENV
+        env:
+          TESTS_DIR: tests
+          COMMON_LAYER_DIR: layers/python/common
+          LAMBDA_DIR: lambda/handlers
+
+      - name: Check for uncreated migrations
+        run: |
+          cd src/layers/python/common
+          python3 db_utils.py makemigrations --check --dry-run
+
+      - name: Run migrations
+        run: |
+          cd src/layers/python/common
+          python3 db_utils.py migrate
+
+      - name: Run all unit tests for common layer code via pytest
+        run: |
+          cd src
+          pytest $TESTS_DIR --cov-config=../.coveragerc --cov
+
+  sam_build_run:
+    runs-on: ubuntu-latest
+
+    services: 
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install migration dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r src/layers/requirements/requirements.txt
+
+      - name: Run migrations
+        run: |
+          cd src/layers/python/common
+          python3 db_utils.py migrate
+
+      - name: Setup SAM
+        uses: aws-actions/setup-sam@v2
+
+      - name: Zip up layers for SAM
+        run: |
+          echo '{"Parameters":{"DB_HOST":"postgres"}}' > src/local-env-vars.json
+          cat src/local-env-vars.json
+          cd src
+          mkdir -p tmp/python
+          cp -r layers/python/common/* tmp/python
+          cd tmp
+          zip -rq ../common-layer.zip python
+          popd
+          cd layers/requirements
+          pip install -r requirements.txt -t python
+          zip -rq ../../libs-layer.zip python
+          # popd
+          # mkdir -p python/psycopg2
+          # git clone https://github.com/jkehler/awslambda-psycopg2.git
+          # cp -r awslambda-psycopg2/psycopg2-3.9/* python/psycopg2/
+          # zip -rq libs-psycopg2-lambda-manual.zip python
+      - uses: actions/upload-artifact@v3
+        with:
+          name: all-zipped-layers
+          path: src/*.zip
+
+      - name: Run health check
+        uses: BerniWittmann/background-server-action@v1
+        with:
+          cwd: src
+          command: curl http://127.0.0.1:3000/openapi.json > openapi.json
+          build: sam build -t template-local.yml
+          start: sam local start-api -t template-local.yml --debug --env-vars local-env-vars.json --docker-network ${{ job.container.network }}
+          wait-on: 'http://localhost:3000/health_check'
+          wait-on-timeout: 120
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: openapi-spec
+          path: src/openapi.json

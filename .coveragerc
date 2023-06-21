@@ -1,0 +1,7 @@
+[run]
+source = layers/python/common,lambda/handlers/app
+omit =
+    # don't test tests
+    tests
+    # don't test migrations
+    layers/python/common/db/migrations/*

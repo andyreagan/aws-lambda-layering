@@ -1,0 +1,7 @@
+aws-lambda-powertools # logging
+# confluent-kafka # kafka streaming
+Django # db layer
+fastapi # api layer
+psycopg2-binary # enables database connection
+pydantic # supports fastapi
+# weasyprint # pdf generation
