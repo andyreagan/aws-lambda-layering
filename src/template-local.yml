@@ -81,7 +81,7 @@ Resources:
       CodeUri: lambda/handlers
       Handler: app.handler
       Layers:
-        - !Ref CommonLayer
+        - !Ref PythonCommonLayer
         - !Ref LibsLayer
         # - !Ref LibsLayerPostgres
       Runtime: python3.9
