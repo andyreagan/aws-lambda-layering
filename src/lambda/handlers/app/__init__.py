@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from django.db import connection
 
 from mangum import Mangum
+from weasyprint import HTML
 
 from models import CustomerInformation, HealthCheckModel
 from workflow import get_customer_info
@@ -52,6 +53,8 @@ def health_check_db() -> HealthCheckModel:
     connection.ensure_connection()
     # test kafka
     get_message()
+    # test weazyprint
+    HTML('https://weasyprint.org/').write_pdf('/tmp/weasyprint-website.pdf')
     return HealthCheckModel()
 
 
