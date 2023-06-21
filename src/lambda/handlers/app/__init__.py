@@ -1,17 +1,13 @@
-from fastapi import FastAPI
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-
 from models import CustomerInformation
+from workflow import get_customer_info
 
 from .router import LoggerRouteHandler
 from .utils import logger, tracer
-from workflow import get_customer_info
 
-app = FastAPI(
-    title="AWS Lambda Layering Test"
-)
+app = FastAPI(title="AWS Lambda Layering Test")
 app.router.route_class = LoggerRouteHandler
 
 
@@ -33,7 +29,6 @@ async def add_correlation_id(request: Request, call_next):
 async def unhandled_exception_handler(request, err):
     logger.exception("Unhandled exception")
     return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
-
 
 
 @app.get("/customer/{customer_id}")

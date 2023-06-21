@@ -62,7 +62,7 @@ jobs:
   sam_build_run:
     runs-on: ubuntu-latest
 
-    services: 
+    services:
       postgres:
         image: postgres
         env:

@@ -1,8 +1,8 @@
 import pytest
-from app import app
 from fastapi.testclient import TestClient
 from pytest import fixture
 
+from app import app
 from db.models import Customer
 
 test_client = TestClient(app)

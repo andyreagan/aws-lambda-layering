@@ -2,14 +2,7 @@
 import logging
 
 from aws_lambda_powertools import Logger
-
-from common_settings import (
-    DB_HOST,
-    DB_NAME,
-    DB_PORT,
-    DB_USER,
-    DB_PASSWORD,
-)
+from common_settings import DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER
 
 logger = Logger(service="AWS Lambda Layering Test")
 
@@ -25,7 +18,9 @@ def init_django():
         return
 
     settings.configure(
-        INSTALLED_APPS=["db",],
+        INSTALLED_APPS=[
+            "db",
+        ],
         TIME_ZONE="UTC",
         USE_TZ=True,
         DEFAULT_AUTO_FIELD="django.db.models.BigAutoField",
@@ -36,7 +31,7 @@ def init_django():
                 "USER": DB_USER,
                 "HOST": DB_HOST,
                 "PORT": DB_PORT,
-                "PASSWORD": DB_PASSWORD
+                "PASSWORD": DB_PASSWORD,
             }
         },
     )
