@@ -102,7 +102,20 @@ Resources:
             Path: /customer/{customer_id}
             PayloadFormatVersion: "2.0"
             Method: get
-
+        HealthCheck:
+          Type: Api
+          Properties:
+            ApiId: WearableAPIGateway
+            Path: /health-check
+            PayloadFormatVersion: "2.0"
+            Method: get
+        HealthCheckDb:
+          Type: Api
+          Properties:
+            ApiId: WearableAPIGateway
+            Path: /health-check-db
+            PayloadFormatVersion: "2.0"
+            Method: get                
   InvokePermission:
     Type: AWS::Lambda::Permission
     Properties:

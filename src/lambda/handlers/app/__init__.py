@@ -39,12 +39,12 @@ def get_customer(customer_id: str) -> CustomerInformation:
     return get_customer_info(customer_id)
 
 
-@app.get("/health_check")
+@app.get("/health-check")
 def health_check() -> HealthCheckModel:
     return HealthCheckModel()
 
 
-@app.get("/health_check_db")
+@app.get("/health-check-db")
 def health_check_db() -> HealthCheckModel:
     logger.debug(f"{connection.settings_dict=}")
     connection.ensure_connection()
