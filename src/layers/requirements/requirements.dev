@@ -1,5 +1,6 @@
-httpx
-pytest
-pytest-cov
-pytest-django
-pytest-mock
+httpx  # testing requests against API
+pytest  # testing
+pytest-cov  # testing coverage
+pytest-django  # testing db layer
+pytest-mock  # testing mocked APIs we depend on
+weasyprint < 53.0  # pdf generation
