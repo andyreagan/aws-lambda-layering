@@ -51,17 +51,17 @@ Resources:
         - x86_64
       RetentionPolicy: Retain
 
-  LibsLayerWeasy:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      LayerName: libs_layer_weasy
-      Description: Requirements Layer for lambdas
-      ContentUri: weasyprint-layer-python3.9.zip
-      CompatibleRuntimes:
-        - python3.9
-      CompatibleArchitectures:
-        - x86_64
-      RetentionPolicy: Retain
+  # LibsLayerWeasy:
+  #   Type: AWS::Serverless::LayerVersion
+  #   Properties:
+  #     LayerName: libs_layer_weasy
+  #     Description: Requirements Layer for lambdas
+  #     ContentUri: weasyprint-layer-python3.9.zip
+  #     CompatibleRuntimes:
+  #       - python3.9
+  #     CompatibleArchitectures:
+  #       - x86_64
+  #     RetentionPolicy: Retain
 
   APIGateway:
     Type: AWS::Serverless::HttpApi
@@ -83,7 +83,7 @@ Resources:
       Layers:
         - !Ref PythonCommonLayer
         - !Ref LibsLayer
-        - !Ref LibsLayerWeasy
+        # - !Ref LibsLayerWeasy
       Runtime: python3.9
       Tracing: Active
       Architectures:

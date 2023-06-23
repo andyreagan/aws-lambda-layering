@@ -104,18 +104,24 @@ jobs:
           cd ..
           cd layers/requirements
           pip install -r requirements.txt -t python
-          zip -rq ../../libs-layer.zip python
+          # zip -rq ../../libs-layer.zip python
           git clone https://github.com/kotify/cloud-print-utils.git
           cd cloud-print-utils
           git switch sam-images
           RUNTIME=python3.9 make build/weasyprint-layer-python3.9.zip
-          # cd ..
-          # mkdir opt
-          # mv -f python opt
-          # unzip cloud-print-utils/build/weasyprint-layer-python3.9.zip -d opt
-          # cd opt
-          # zip -rq ../../../libs-layer.zip .
-          mv build/weasyprint-layer-python3.9.zip ../../..
+          cd ..
+          mkdir opt
+          mv -f python opt
+          unzip cloud-print-utils/build/weasyprint-layer-python3.9.zip -d opt
+          cd opt
+          mv python/lib/site-packages/bin/* python/bin
+          rm -r python/lib/site-packages/bin
+          rm -r python/lib/site-packages/__pycache__
+          rm -r python/lib/site-packages/six-1.16.0.dist-info
+          mv python/lib/site-packages/* python
+          rm -r python/lib
+          zip -rq ../../../libs-layer.zip .
+          # mv build/weasyprint-layer-python3.9.zip ../../..
       - uses: actions/upload-artifact@v3
         with:
           name: all-zipped-layers
